@@ -1,0 +1,49 @@
+<wps:ProcessOfferings 
+  xmlns:wps="http://www.opengis.net/wps/2.0" 
+  xmlns:ows="http://www.opengis.net/ows/2.0" 
+  xmlns:xlink="http://www.w3.org/1999/xlink" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wps/2.0 http://schemas.opengis.net/wps/2.0/wps.xsd">
+  <wps:ProcessOffering jobControlOptions="async-execute dismiss sync-execute" outputTransmission="value reference" processVersion="0.0.1" processModel="native">
+    <wps:Process xsi:schemaLocation="http://www.opengis.net/wps/2.0 http://schemas.opengis.net/wps/2.0/wps.xsd">
+      <ows:Title>Sentinel-2 Download to GeoTiff Process</ows:Title>
+      <ows:Abstract>Perform a Sentinel-2 file download, resample the image and write it out as GeoTiff.</ows:Abstract>
+      <ows:Identifier>de.hsbo.wacodis.snap.s2togeotiff</ows:Identifier>
+      <wps:Input minOccurs="1" maxOccurs="1">
+        <ows:Title>Sentinel-2 URL</ows:Title>
+        <ows:Abstract>Sentinel-2 URL from Open Access Hub</ows:Abstract>
+        <ows:Identifier>SENTINEL-2_URL</ows:Identifier>
+        <wps:LiteralData>
+          <wps:Format mimeType="application/xml" default="true"/>
+          <wps:Format mimeType="text/xml"/>
+          <wps:Format mimeType="text/plain"/>
+          <wps:Format mimeType="text/plain" encoding="base64"/>
+          <LiteralDataDomain default="true">
+            <ows:AnyValue/>
+            <ows:DataType ows:reference="https://www.w3.org/2001/XMLSchema-datatypes#string">string</ows:DataType>
+            <ows:DefaultValue/>
+          </LiteralDataDomain>
+        </wps:LiteralData>
+      </wps:Input>
+      <wps:Output>
+        <ows:Title>PRODUCT</ows:Title>
+        <ows:Identifier>PRODUCT</ows:Identifier>
+        <wps:ComplexData>
+          <wps:Format mimeType="image/geotiff" default="true"/>
+          <wps:Format mimeType="image/geotiff"/>
+          <wps:Format mimeType="image/tiff" encoding="base64"/>
+          <wps:Format mimeType="image/tiff"/>
+          <wps:Format mimeType="image/geotiff" encoding="base64"/>
+        </wps:ComplexData>
+      </wps:Output>
+      <wps:Output>
+        <ows:Title>METADATA</ows:Title>
+        <ows:Identifier>METADATA</ows:Identifier>
+        <wps:ComplexData>
+          <wps:Format mimeType="application/json" default="true"/>
+          <wps:Format mimeType="application/json"/>
+          <wps:Format mimeType="text/json"/>
+        </wps:ComplexData>
+      </wps:Output>
+    </wps:Process>
+  </wps:ProcessOffering>
+</wps:ProcessOfferings>

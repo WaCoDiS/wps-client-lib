@@ -18,12 +18,14 @@ package org.n52.geoprocessing.wps.client.decoder.stream;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -478,6 +480,31 @@ public class DescribeProcessResponseDecoder extends AbstractElementXmlStreamRead
 
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
+            
+            int minOccurs = 0;
+            int maxOccurs = 0;
+            
+            // read in attributes
+            Iterator<Attribute> attrIt = elem.getAttributes();
+            while (attrIt.hasNext()) {
+                Attribute attr = attrIt.next();
+                if (attr.getName() != null && "minOccurs".equals(attr.getName().getLocalPart())) {
+                    try {
+                        minOccurs = Integer.parseInt(attr.getValue());
+                    }
+                    catch (NumberFormatException e) {
+                        throw new NumberFormatException("Invalid defintion of minOccurs for input: '" + attr.getValue() + "'");
+                    }
+                }
+                else if (attr.getName() != null && "maxOccurs".equals(attr.getName().getLocalPart())) {
+                    try {
+                        maxOccurs = Integer.parseInt(attr.getValue());                        
+                    }
+                    catch (NumberFormatException e) {
+                        throw new NumberFormatException("Invalid defintion of maxOccurs for input: '" + attr.getValue() + "'");
+                    }
+                }
+            }
             if (event.isStartElement()) {
                 StartElement start = event.asStartElement();
                 if (start.getName().equals(OWSConstants.Elem.QN_TITLE)) {
@@ -504,6 +531,8 @@ public class DescribeProcessResponseDecoder extends AbstractElementXmlStreamRead
                     input.setTitle(title);
                     input.setId(id);
                     input.setAbstract(abstrakt);
+                    input.setMinOccurs(minOccurs);
+                    input.setMaxOccurs(maxOccurs);
                     return input;
                 }
 

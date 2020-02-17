@@ -24,8 +24,8 @@
             <version>14</version>
         </parent>
 	<groupId>org.n52.geoprocessing</groupId>
-	<artifactId>wps-client-lib</artifactId>
-	<version>1.0.4-SNAPSHOT</version>
+	<artifactId>wps-client-lib-wacodis</artifactId>
+	<version>1.0.4</version>
 	<name>52 North WPS Client library</name>
 	<inceptionYear>2017</inceptionYear>
 	<properties>

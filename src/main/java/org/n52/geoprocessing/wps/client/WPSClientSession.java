@@ -97,7 +97,7 @@ public class WPSClientSession {
 
     private static int maxNumberOfAsyncRequests = 100;
 
-    private static int delayForAsyncRequests = 1000;
+    private static int delayForAsyncRequests = 30000;
 
     private Map<String, WPSCapabilities> loggedServices;
 

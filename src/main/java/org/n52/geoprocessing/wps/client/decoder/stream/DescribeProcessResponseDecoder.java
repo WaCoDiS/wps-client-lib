@@ -22,8 +22,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -472,6 +474,9 @@ public class DescribeProcessResponseDecoder extends AbstractElementXmlStreamRead
 
         InputDescription input = new InputDescription();
 
+        Attribute minOccurs = elem.getAttributeByName(new QName("minOccurs"));
+        Attribute maxOccurs = elem.getAttributeByName(new QName("maxOccurs"));
+
         String title = "";
         String id = "";
         String abstrakt = "";
@@ -504,6 +509,12 @@ public class DescribeProcessResponseDecoder extends AbstractElementXmlStreamRead
                     input.setTitle(title);
                     input.setId(id);
                     input.setAbstract(abstrakt);
+                    if (minOccurs != null) {
+                        input.setMinOccurs(Integer.parseInt(minOccurs.getValue()));
+                    }
+                    if (maxOccurs != null) {
+                        input.setMaxOccurs(Integer.parseInt(maxOccurs.getValue()));
+                    }
                     return input;
                 }
 

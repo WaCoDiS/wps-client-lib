@@ -727,20 +727,24 @@ public class WPSClientSession {
         fileURL = locateFile(fileName);
         // check if the strategies found something
         if (fileURL != null) {
+            LOGGER.info("Found properties file at {}", fileURL);
             try {
                 propertyNodeOptional = Optional.of(Json.loadURL(fileURL));
             } catch (IOException e) {
                 LOGGER.error("Could not read property file.", e);
             }
-        }
-        fileURL = locateFile(defaultFileName);
-        try {
-            propertyNodeOptional = Optional.of(Json.loadURL(fileURL));
-        } catch (IOException e) {
-            LOGGER.error("Could not read  default property file.", e);
+        } else {
+            fileURL = locateFile(defaultFileName);
+            LOGGER.info("Using default properties file at {}", fileURL);
+            try {
+                propertyNodeOptional = Optional.of(Json.loadURL(fileURL));
+            } catch (IOException e) {
+                LOGGER.error("Could not read  default property file.", e);
+            }
         }
 
         if (propertyNodeOptional.isPresent()) {
+            LOGGER.info("found properties{}", propertyNodeOptional.get());
             JsonNode propertyNode = propertyNodeOptional.get();
             setProperties(propertyNode);
         }
@@ -773,6 +777,7 @@ public class WPSClientSession {
                 LOGGER.info(jsonMalformed);
             } else {
                 maxNumberOfAsyncRequests = valueNode.asInt();
+                LOGGER.info("property will be used. maxNumberOfAsyncRequests={}", maxNumberOfAsyncRequests);
             }
         } else {
             LOGGER.info("Property maxNumberOfAsyncRequests not present, defaulting to: " + maxNumberOfAsyncRequests);
@@ -786,6 +791,7 @@ public class WPSClientSession {
                 LOGGER.info(jsonMalformed);
             } else {
                 delayForAsyncRequests = valueNode.asInt();
+                LOGGER.info("property will be used. delayForAsyncRequests={}", delayForAsyncRequests);
             }
         } else {
             LOGGER.info("Property delayForAsyncRequests not present, defaulting to: " + delayForAsyncRequests);

@@ -35,7 +35,7 @@ public class WPSClientException extends Exception {
     }
 
     public WPSClientException(String message, Exception e) {
-        super(message);
+        super(message, e);
     }
 
     public String getServerException() {

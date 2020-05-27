@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -57,6 +59,7 @@ import org.n52.geoprocessing.wps.client.model.Process;
 import org.n52.geoprocessing.wps.client.model.ResponseMode;
 import org.n52.geoprocessing.wps.client.model.StatusInfo;
 import org.n52.geoprocessing.wps.client.model.WPSCapabilities;
+import org.n52.geoprocessing.wps.client.model.async.FutureResult;
 import org.n52.geoprocessing.wps.client.model.execution.ExecutionMode;
 import org.n52.geoprocessing.wps.client.xml.WPSResponseReader;
 import org.n52.janmayen.Json;
@@ -629,7 +632,7 @@ public class WPSClientSession {
         if (responseObject instanceof StatusInfo) {
 
             if (requestAsync) {
-                return getAsyncDoc(url, responseObject);
+                return getAsyncDocAsync(url, responseObject);
             }
 
             return (StatusInfo) responseObject;
@@ -658,6 +661,25 @@ public class WPSClientSession {
 
         return urlSpec;
 
+    }
+
+    private FutureResult getAsyncDocAsync(String url,
+                                          Object responseObject) throws IOException, WPSClientException {
+        String jobId = null;
+        if (responseObject instanceof StatusInfo) {
+
+            StatusInfo statusInfoDocument = (StatusInfo) responseObject;
+            jobId = statusInfoDocument.getJobId();
+
+        }
+        CompletableFuture<Object> futureResult = CompletableFuture.supplyAsync(() -> {
+            try {
+                return getAsyncDoc(url, responseObject);
+            } catch (IOException | WPSClientException e) {
+                throw new CompletionException(e);
+            }
+        });
+        return new FutureResult(jobId, futureResult);
     }
 
     private Object getAsyncDoc(String url,

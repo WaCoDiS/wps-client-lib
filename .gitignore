@@ -3,3 +3,9 @@
 .classpath
 .project
 wps-client.log
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr

@@ -324,6 +324,13 @@ public class WPSClientSession {
         return execute(url, executeObject, requestRawData, requestAsync);
     }
 
+    private Object execute(String url,
+                           Object executeObject,
+                           boolean rawData,
+                           boolean requestAsync) throws WPSClientException, IOException {
+        return retrieveExecuteResponseViaPOST(url, executeObject, rawData, requestAsync);
+    }
+
     /**
      * Executes a process at a WPS async
      *
@@ -350,13 +357,6 @@ public class WPSClientSession {
         Object executeObject = encode(execute, version);
 
         return retrieveExecuteResponseViaPOSTAsync(url, executeObject, requestRawData, true);
-    }
-
-    private Object execute(String url,
-            Object executeObject,
-            boolean rawData,
-            boolean requestAsync) throws WPSClientException, IOException {
-        return retrieveExecuteResponseViaPOST(url, executeObject, rawData, requestAsync);
     }
 
     public String[] getProcessNames(String url) throws IOException {

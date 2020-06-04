@@ -324,6 +324,34 @@ public class WPSClientSession {
         return execute(url, executeObject, requestRawData, requestAsync);
     }
 
+    /**
+     * Executes a process at a WPS async
+     *
+     * @param url
+     *            url of server not the entry additionally defined in the caps.
+     * @param execute
+     *            Execute document
+     * @param version
+     *            the version of the WPS
+     *
+     * @return either an ExecuteResponseDocument or an InputStream if asked for
+     *         RawData or an Exception Report
+     * @throws WPSClientException
+     *             if the initial execute request failed
+     * @throws IOException
+     *             if subsequent requests failed in async mode
+     */
+    public Object executeAsync(String url,
+                          org.n52.geoprocessing.wps.client.model.execution.Execute execute,
+                          String version) throws WPSClientException, IOException {
+
+        boolean requestRawData = execute.getResponseMode() == ResponseMode.RAW;
+
+        Object executeObject = encode(execute, version);
+
+        return retrieveExecuteResponseViaPOSTAsync(url, executeObject, requestRawData, true);
+    }
+
     private Object execute(String url,
             Object executeObject,
             boolean rawData,

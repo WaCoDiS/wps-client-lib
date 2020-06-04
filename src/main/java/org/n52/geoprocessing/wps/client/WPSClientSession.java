@@ -632,6 +632,48 @@ public class WPSClientSession {
         if (responseObject instanceof StatusInfo) {
 
             if (requestAsync) {
+                return getAsyncDoc(url, responseObject);
+            }
+
+            return (StatusInfo) responseObject;
+        }
+        // TODO when does this happen?!
+        return responseObject;
+    }
+
+    /**
+     * If requested async this method returns a {@link FutureResult} wrapping the result as {@link CompletableFuture}.
+     * If requested sync it will directly return either an ExecuteResponseDocument or an InputStream if asked for
+     * RawData or an Exception Report.
+     *
+     * @param url
+     *            WPS url
+     * @param executeObject
+     *            encoded execute request
+     * @param rawData
+     *            indicates if raw data should be requested
+     * @param requestAsync
+     *            indicates if request should be async
+     * @return The execute response
+     * @throws WPSClientException
+     *             if the initial execute request failed
+     * @throws IOException
+     *             if subsequent requests failed in async mode
+     */
+    private Object retrieveExecuteResponseViaPOSTAsync(String url,
+                                                  Object executeObject,
+                                                  boolean rawData,
+                                                  boolean requestAsync) throws WPSClientException, IOException {
+
+        Object responseObject = retrieveDataViaPOST(executeObject, url);
+
+        if (rawData && !requestAsync) {
+            return responseObject;
+        }
+
+        if (responseObject instanceof StatusInfo) {
+
+            if (requestAsync) {
                 return getAsyncDocAsync(url, responseObject);
             }
 
